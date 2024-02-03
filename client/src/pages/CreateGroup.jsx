@@ -16,6 +16,7 @@ export default function CreateGroup() {
   // const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [groupCreated, setGroupCreated] = useState(false);
   console.log(formData);
 
   const handleChange = (e) => {
@@ -47,7 +48,9 @@ export default function CreateGroup() {
         [e.target.id]: e.target.value,
       });
     }
+    console.log(formData);
   };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -57,9 +60,10 @@ export default function CreateGroup() {
       myHeaders.append("Content-Type", "application/json");
       myHeaders.append("Authorization", `Bearer ${currentUser.data.accessToken}`);
 
+      console.log('form josn data', JSON.stringify(formData));
       setLoading(true);
       setError(false);
-      const res = await fetch("http://192.168.1.130:8080/api/group/", {
+      const res = await fetch("http://192.168.1.130:8080/api/group", {
         method: "POST",
         headers: myHeaders,
         body: JSON.stringify({
@@ -68,12 +72,18 @@ export default function CreateGroup() {
       });
       const data = await res.json();
       setLoading(false);
+      console.log(data.success);
       if (data.success === false) {
         setError(data.message);
+        setGroupCreated(false);
       }
-      console.log('create group data', data);
-      debugger;
-      navigate(`/view_group/${data.groudId}`);
+
+      if (data.status === 'CREATED') {
+        setGroupCreated(true);
+      }
+      console.log('created group data', data);
+      
+      // navigate(`/view_group/${data.groudId}`);
     } catch (error) {
       setError(error.message);
       setLoading(false);
@@ -114,6 +124,7 @@ export default function CreateGroup() {
             {loading ? "Creating..." : "Create a group"}
           </button>
           {error && <p className='text-red-700 text-sm'>{error}</p>}
+          {groupCreated && <p className='text-green-700 text-sm'>Group created successfully</p>}
         </div>
 
       
