@@ -52,16 +52,18 @@ export default function CreateGroup() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+
+      let myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+      myHeaders.append("Authorization", `Bearer ${currentUser.data.accessToken}`);
+
       setLoading(true);
       setError(false);
-      const res = await fetch("/api/group/create", {
+      const res = await fetch("http://192.168.1.130:8080/api/group/", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: myHeaders,
         body: JSON.stringify({
           ...formData,
-          userRef: currentUser._id,
         }),
       });
       const data = await res.json();
@@ -69,7 +71,9 @@ export default function CreateGroup() {
       if (data.success === false) {
         setError(data.message);
       }
-      navigate(`/group/${data._id}`);
+      console.log('create group data', data);
+      debugger;
+      navigate(`/view_group/${data.groudId}`);
     } catch (error) {
       setError(error.message);
       setLoading(false);

@@ -29,7 +29,7 @@ export default function App() {
         <Route path="/dashboard" element={<Dashboard />}/>
         <Route path="/create-listing" element={<CreateListing />}/>
         <Route path="/create-group" element={<CreateGroup />}/>
-        <Route path="/group/:groupId" element={<ViewGroup />}/>
+        <Route path="/view-group/:groupId" element={<ViewGroup />}/>
         <Route path="/update-listing/:listingId" element={<UpdateListing />}/>
       </Route>
 

@@ -23,7 +23,8 @@ import { Link } from "react-router-dom";
 
 export default function Profile() {
   const fileRef = useRef(null);
-  const { currentUser, loading, error } = useSelector((state) => state.user);
+  let { currentUser, loading, error } = useSelector((state) => state.user);
+  loading = false;
   const [file, setFile] = useState(undefined);
   const [filePerc, setFilePerc] = useState(0);
   const [fileUploadError, setFileUploadError] = useState(false);
@@ -57,7 +58,7 @@ export default function Profile() {
       });
       const data = await res.json();
       setUserData(data);
-      setFormData({...formData, name: userData.data.name, emailId: userData.data.emailId, profilePic: userData.data.profilePic});
+      // setFormData({...formData, name: userData.data.name, emailId: userData.data.emailId, profilePic: userData.data.profilePic});
       console.log("get user data, ", data);
     };
     fetchUser();
@@ -100,6 +101,7 @@ export default function Profile() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+ 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("Authorization", `Bearer ${currentUser.data.accessToken}`);
@@ -118,7 +120,8 @@ export default function Profile() {
         return;
       }
 
-      // dispatch(updateUserSuccess(data));
+      dispatch(updateUserSuccess(data));
+      console.log('loading in submit', loading);
       setUpdateSuccess(true);
     } catch (error) {
       dispatch(updateUserFailure(error.message));
