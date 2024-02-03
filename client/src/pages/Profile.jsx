@@ -27,12 +27,16 @@ export default function Profile() {
   const [file, setFile] = useState(undefined);
   const [filePerc, setFilePerc] = useState(0);
   const [fileUploadError, setFileUploadError] = useState(false);
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState({
+    emailId: '', name: '', profilePic: '',
+  });
   const [updateSuccess, setUpdateSuccess] = useState(false);
   const [showListingsError, setShowListingsError] = useState(false);
   const [userListings, setUserListings] = useState([]);
   const [userData, setUserData] = useState(null);
   const dispatch = useDispatch();
+
+  console.log('formdata ', formData);
 
   // firebase storage
   // allow read;
@@ -41,7 +45,7 @@ export default function Profile() {
   // request.resource.contentType.matches('image/.*')
 
   useEffect(() => {
-    console.log("data ");
+    console.log("accesstoken ", currentUser.data.accessToken);
     var myHeaders = new Headers();
     myHeaders.append("Authorization", `Bearer ${currentUser.data.accessToken}`);
 
@@ -53,6 +57,7 @@ export default function Profile() {
       });
       const data = await res.json();
       setUserData(data);
+      setFormData({...formData, name: userData.data.name, emailId: userData.data.emailId, profilePic: userData.data.profilePic});
       console.log("get user data, ", data);
     };
     fetchUser();
@@ -141,12 +146,7 @@ export default function Profile() {
   const handleSignOut = async () => {
     try {
       dispatch(signOutUserStart());
-      // const res = await fetch('/api/auth/signout');
-      // const data = await res.json();
-      // if( data.success === false) {
-      // dispatch(signOutUserFailure(data.message));
-      // return;
-      // }
+  
       dispatch(signOutUserSuccess(null));
     } catch (error) {
       dispatch(signOutUserFailure(error.message));
@@ -246,10 +246,10 @@ export default function Profile() {
           {loading ? "Loading..." : "Update"}
         </button>
         <Link
-          to={"/create-listing"}
+          to={"/create-group"}
           className='bg-green-700 text-white p-3 rounded-lg uppercase text-center hover:opacity-90'
         >
-          Create Listing
+          create group
         </Link>
       </form>
       <div className='flex justify-between mt-5'>
