@@ -223,13 +223,13 @@ console.log('user data', userData);
           create group
         </Link>
       </form>
-      <div className='flex justify-between mt-5'>
-        <span
+      <div className='flex justify-end mt-5'>
+        {/* <span
           onClick={handleDeleteUser}
           className='text-red-700 cursor-pointer'
         >
           Delete account
-        </span>
+        </span> */}
         <span onClick={handleSignOut} className='text-red-700 cursor-pointer'>
           Sign out
         </span>

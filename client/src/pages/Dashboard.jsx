@@ -68,9 +68,9 @@ export default function Dashboard() {
 
   console.log("usergroup data", userGroupsData);
 
-  function GroupItem({ name, description }) {
+  function GroupItem({ name, description, id }) {
     return (
-      <Link className='p-6 inline-block m-2 bg-white shadow-md hover:shadow-lg rounded-lg w-64'>
+      <Link to={`/view-group/${id}`} className='p-6 inline-block m-2 bg-white shadow-md hover:shadow-lg rounded-lg w-64'>
         <p className='text-2xl font-semibold text-slate-600'> {name}</p>
         <p className='text-l text-slate-600'>Description : {description}</p>
       </Link>
@@ -95,9 +95,10 @@ export default function Dashboard() {
             userGroupsData.length > 0 &&
             userGroupsData.map((group) => (
               <GroupItem
-                key={group.name}
+                key={group.id}
                 name={group.name}
                 description={group.description}
+                id={group.id}
               />
             ))}
         </div>

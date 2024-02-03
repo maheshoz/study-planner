@@ -18,6 +18,7 @@ import Contact from "../components/Contact";
 export default function ViewGroup() {
   SwiperCore.use([Navigation]);
   const [listing, setListing] = useState(null);
+  const [groupData, setGroupData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -25,13 +26,27 @@ export default function ViewGroup() {
   const params = useParams();
   const { currentUser } = useSelector((state) => state.user);
   // console.log('currentUser', currentUser);
-  console.log('params ', params);
+  console.log("params ", params);
 
   useEffect(() => {
-    const fetchListing = async () => {
+    const fetchGroupListing = async () => {
       try {
+        let myHeaders = new Headers();
+        myHeaders.append("Authorization", `Bearer ${currentUser.data.accessToken}`);
+
+        // let requestOptions = {
+        //   method: "GET",
+        //   headers: myHeaders,
+        //   redirect: "follow",
+        // };
+
         setLoading(true);
-        const res = await fetch(`/api/listing/get/${params.listingId}`);
+        const res = await fetch(
+          `http://192.168.1.130:8080/api/group/${params.groupId}`,{
+            method: "GET",
+            headers: myHeaders,
+        }
+        );
         const data = await res.json();
         if (data.success === false) {
           console.log(data);
@@ -40,7 +55,10 @@ export default function ViewGroup() {
           setLoading(false);
           return;
         }
-        setListing(data);
+        // setListing(data);
+        console.log('Group data', data);
+        setGroupData(data['data']);
+        console.log('state data', groupData);
         setLoading(false);
         setError(false);
       } catch (error) {
@@ -49,15 +67,26 @@ export default function ViewGroup() {
       }
     };
 
-    fetchListing();
-  }, [params.listingId]);
+    fetchGroupListing();
+  }, [params.groupId]);
 
   return (
-    <main>
+    <main className="px-3 max-w-6xl mx-auto">
       {loading && <p className='text-center my-7 text-2xl'>Loading...</p>}
       {error && (
         <p className='text-center my-7 text-2xl'>Something went wrong</p>
       )}
+
+      {
+        groupData && !loading && !error && (
+         <div className="mt-6">
+          <h1 className="text-3xl font-semibold text-slate-600">{groupData.name}</h1>
+          <p className="text-base sm:text-lg mt-3 text-slate-700"><span className="text-semibold text-slate-800">Description: </span> {groupData.description}</p>
+         </div>
+        )
+
+      
+        }
 
       {listing && !loading && !error && (
         <div>
@@ -113,41 +142,47 @@ export default function ViewGroup() {
                 </p>
               )}
             </div>
-            <p className="text-slate-800">
-              <span className='font-semibold text-black'>Desription - {" "}</span>
+            <p className='text-slate-800'>
+              <span className='font-semibold text-black'>Desription - </span>
               {listing.description}
             </p>
-            <ul className="text-green-900 font-semibold text-sm flex items-center flex-wrap gap-4 sm:gap-6">
-              <li className="flex items-center gap-1 whitespace-nowrap">
-                <FaBed className="text-lg"/>
-                {listing.bedrooms > 1 ? `${listing.bedrooms} beds` : `${listing.bedrooms} bed`}
+            <ul className='text-green-900 font-semibold text-sm flex items-center flex-wrap gap-4 sm:gap-6'>
+              <li className='flex items-center gap-1 whitespace-nowrap'>
+                <FaBed className='text-lg' />
+                {listing.bedrooms > 1
+                  ? `${listing.bedrooms} beds`
+                  : `${listing.bedrooms} bed`}
               </li>
-              <li className="flex items-center gap-1 whitespace-nowrap">
-                <FaBath className="text-lg"/>
-                {listing.bathrooms > 1 ? `${listing.bathrooms} baths` : `${listing.bathrooms} bath`}
+              <li className='flex items-center gap-1 whitespace-nowrap'>
+                <FaBath className='text-lg' />
+                {listing.bathrooms > 1
+                  ? `${listing.bathrooms} baths`
+                  : `${listing.bathrooms} bath`}
               </li>
-              <li className="flex items-center gap-1 whitespace-nowrap">
-                <FaParking className="text-lg"/>
-                {listing.parking  ? 'Parking spot' : 'No Parking' }
+              <li className='flex items-center gap-1 whitespace-nowrap'>
+                <FaParking className='text-lg' />
+                {listing.parking ? "Parking spot" : "No Parking"}
               </li>
-              <li className="flex items-center gap-1 whitespace-nowrap">
-                <FaChair className="text-lg"/>
-                {listing.furnished ? 'Furnished' : 'Unfurnished' }
+              <li className='flex items-center gap-1 whitespace-nowrap'>
+                <FaChair className='text-lg' />
+                {listing.furnished ? "Furnished" : "Unfurnished"}
               </li>
-
             </ul>
             {/* {console.log('listing details', listing)} */}
             {/* {console.log(listing.userRef, " ", currentUser._id) } */}
             {currentUser && listing.userRef !== currentUser._id && !contact && (
-              <button onClick={()=> setContact(true)} className='bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 p-3 mt-4'>
+              <button
+                onClick={() => setContact(true)}
+                className='bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 p-3 mt-4'
+              >
                 Contact landlord
               </button>
             )}
-            { contact && <Contact listing={listing}/>}
+            {contact && <Contact listing={listing} />}
           </div>
         </div>
       )}
-      <div className="mt-32"></div>
+      <div className='mt-32'></div>
     </main>
   );
 }
