@@ -242,14 +242,16 @@ export default function ViewGroup() {
   }
 
   return (
-    <main className='px-4 sm:px-12 max-w-6xl flex items-center bg-white mt-8 mb-32'>
+    <main className='  w-full  flex justify-center items-center bg-slate-100 justify-center'>
+
+      <div className=" bg-white  p-16 mt-8 mb-16">
       {loading && <Loading />}
       {error && (
         <p className='text-center my-7 text-2xl'>Something went wrong</p>
       )}
 
       {groupData && !loading && !error && (
-        <div className='mt-6'>
+        <div className=''>
           <h1 className='text-3xl pt-6 font-semibold text-slate-600'>
             <FaUsers className='inline  w-10 h-10 mx-4' />
             {groupData.name}
@@ -340,6 +342,37 @@ export default function ViewGroup() {
               { tasksFlag && tasks && tasks.length > 0 && 
               tasks.map((task)=> <TaskItem key={task.taskId} task={task}/>)
             }
+
+            <div className="bg-slate-100">
+              <h3 className="text-xl p-4 rouned-lg">Discussion/Chat</h3>
+              <div className="room p-4">
+                <div className="flex justify-between p-3 border-b-gray-800">
+                  <p className="text-l text-slate-500 capitalize">Hi all, i have a down on promises --</p>
+
+                  <p className="text-slate-500">Username <img className="w-8 h-8 bg-slate-500 rounded-full" src="" alt="" /></p>
+                </div>
+                <div className="flex justify-between p-3 border-b-gray-800">
+                  <p className="text-l text-slate-500 capitalize">Hi all, i have a down on promises --</p>
+
+                  <p className="text-slate-500">Username <img className="w-8 h-8 bg-slate-500 rounded-full" src="" alt="" /></p>
+                </div>
+                <div className="flex justify-between p-3 border-b-gray-800">
+                  <p className="text-l text-slate-500 capitalize">Hi all, i have a down on promises --</p>
+
+                  <p className="text-slate-500">Username <img className="w-8 h-8 bg-slate-500 rounded-full" src="" alt="" /></p>
+                </div>
+                <div className="flex justify-between p-3 border-b-gray-800">
+                  <p className="text-l text-slate-500 capitalize">Hi all, i have a down on promises --</p>
+
+                  <p className="text-slate-500">Username <img className="w-8 h-8 bg-slate-500 rounded-full" src="" alt="" /></p>
+                </div>
+                <input type="text" className='m-4 border-gray-500 border p-2 rounded-lg w-full'/>
+                  <div className="flex justify-end">
+                 <button className=" bg-green-700 text-white p-1 px-16 rounded">Send</button> 
+
+                  </div>
+              </div>
+            </div>
             
             </div>
 
@@ -375,6 +408,8 @@ export default function ViewGroup() {
       )}
 
       <div className='mt-32'></div>
+
+      </div>
     </main>
   );
 }
