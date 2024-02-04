@@ -6,7 +6,7 @@ import About from "./pages/About"
 import Profile from "./pages/Profile"
 import Header from "./components/Header"
 import PrivateRoute from "./components/PrivateRoute"
-import CreateListing from "./pages/CreateListing"
+// import CreateListing from "./pages/CreateListing"
 import UpdateListing from "./pages/UpdateListing"
 import Listing from "./pages/Listing"
 import Search from "./pages/Search"
@@ -27,7 +27,7 @@ export default function App() {
       <Route element={<PrivateRoute />}>
         <Route path="/profile" element={<Profile />}/>
         <Route path="/dashboard" element={<Dashboard />}/>
-        <Route path="/create-listing" element={<CreateListing />}/>
+        {/* <Route path="/create-listing" element={<CreateListing />}/> */}
         <Route path="/create-group" element={<CreateGroup />}/>
         <Route path="/view-group/:groupId" element={<ViewGroup />}/>
         <Route path="/update-listing/:listingId" element={<UpdateListing />}/>

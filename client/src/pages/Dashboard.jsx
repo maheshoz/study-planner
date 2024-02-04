@@ -71,8 +71,8 @@ export default function Dashboard() {
   function GroupItem({ name, description, id }) {
     return (
       <Link to={`/view-group/${id}`} className='p-6 inline-block m-2 bg-white shadow-md hover:shadow-lg rounded-lg w-64'>
-        <p className='text-2xl font-semibold text-slate-600'> {name}</p>
-        <p className='text-l text-slate-600'>Description : {description}</p>
+        <p className='text-2xl font-semibold text-slate-600 capitalize'> {name}</p>
+        <p className='text-l mt-2 text-slate-500 line-clamp-3'> <span className="font-semibold">Description : </span> {description}</p>
       </Link>
     );
   }

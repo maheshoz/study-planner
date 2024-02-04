@@ -1,42 +1,27 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function CreateGroup() {
   const { currentUser } = useSelector((state) => state.user);
   const navigate = useNavigate();
-  // const [files, setFiles] = useState([]);
+
   const [formData, setFormData] = useState({
     
     name: "",
     description: "",
 
   });
-  // const [imageUploadError, setImageUploadError] = useState(false);
-  // const [uploading, setUploading] = useState(false);
+ 
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
   const [groupCreated, setGroupCreated] = useState(false);
   console.log(formData);
 
   const handleChange = (e) => {
-    if (e.target.id === "sale" || e.target.id === "rent") {
-      setFormData({
-        ...formData,
-        type: e.target.id,
-      });
-    }
 
-    if (
-      e.target.id === "parking" ||
-      e.target.id === "furnished" ||
-      e.target.id === "offer"
-    ) {
-      setFormData({
-        ...formData,
-        [e.target.id]: e.target.checked,
-      });
-    }
 
     if (
       e.target.type === "number" ||
@@ -80,6 +65,12 @@ export default function CreateGroup() {
 
       if (data.status === 'CREATED') {
         setGroupCreated(true);
+        console.log('data message', data.message);
+        setTimeout(()=> {
+          navigate('/dashboard');
+        },2000);
+        toast(data.message);
+        
       }
       console.log('created group data', data);
       
@@ -125,6 +116,7 @@ export default function CreateGroup() {
           </button>
           {error && <p className='text-red-700 text-sm'>{error}</p>}
           {groupCreated && <p className='text-green-700 text-sm'>Group created successfully</p>}
+          <ToastContainer />
         </div>
 
       
