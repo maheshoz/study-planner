@@ -48,7 +48,7 @@ export default function CreateGroup() {
       console.log('form josn data', JSON.stringify(formData));
       setLoading(true);
       setError(false);
-      const res = await fetch("http://192.168.1.130:8080/api/group", {
+      const res = await fetch("http://192.168.208.1:8080/api/group", {
         method: "POST",
         headers: myHeaders,
         body: JSON.stringify({

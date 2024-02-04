@@ -23,7 +23,7 @@ export default function SignIn() {
     try {
       // setLoading(true);
       dispatch(signInStart());
-      const res = await fetch('http://192.168.1.130:8080/api/auth/login', {
+      const res = await fetch('http://192.168.208.1:8080/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

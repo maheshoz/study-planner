@@ -18,14 +18,14 @@ export default function SignUp() {
     try {
       setLoading(true);
 
-      // const res2 = await fetch('http://192.168.1.130:8080/api/auth/hello');
+      // const res2 = await fetch('http://192.168.208.1:8080/api/auth/hello');
       // const data2 = res2.json();
       // console.log('hello data ', data2);
 
       console.log('form data', JSON.stringify(formData));
 
-      const res = await fetch('http://192.168.1.130:8080/api/auth/signup', {
-        //192.168.1.130:8080/api/auth/signup
+      const res = await fetch('http://192.168.208.1:8080/api/auth/signup', {
+        //192.168.208.1:8080/api/auth/signup
 
         method: 'POST',
         headers: {

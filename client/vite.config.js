@@ -6,7 +6,7 @@ export default defineConfig({
   // server: {
   //   proxy: {
   //     '/api': {
-  //       target : 'http://192.168.1.130:8080',
+  //       target : 'http://192.168.208.1:8080',
   //       secure: false,
   //     },
   //   },

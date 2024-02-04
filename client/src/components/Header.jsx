@@ -45,7 +45,7 @@ export default function Header() {
         
       
       const fetchUser = async ()=> {
-        const res = await fetch('http://192.168.1.130:8080/api/user', {
+        const res = await fetch('http://192.168.208.1:8080/api/user', {
           method: 'GET',
           headers:myHeaders ,
           // body: JSON.stringify(formData),

@@ -60,7 +60,7 @@ export default function ViewGroup() {
 
         setLoading(true);
         const res = await fetch(
-          `http://192.168.1.130:8080/api/group/${params.groupId}`,
+          `http://192.168.208.1:8080/api/group/${params.groupId}`,
           {
             method: "GET",
             headers: myHeaders,
@@ -117,7 +117,7 @@ export default function ViewGroup() {
     };
 
     fetch(
-      `http://192.168.1.130:8080/api/invitation/${params.groupId}`,
+      `http://192.168.208.1:8080/api/invitation/${params.groupId}`,
       requestOptions
     )
       .then((response) => response.json())
@@ -152,7 +152,7 @@ export default function ViewGroup() {
     };
 
     fetch(
-      `http://192.168.1.130:8080/api/task/${params.groupId}`,
+      `http://192.168.208.1:8080/api/task/${params.groupId}`,
       requestOptions
     )
       .then((response) => response.json())
@@ -189,7 +189,7 @@ export default function ViewGroup() {
     };
 
     fetch(
-      `http://192.168.1.130:8080/api/group/forum/${params.groupId}`,
+      `http://192.168.208.1:8080/api/group/forum/${params.groupId}`,
       requestOptions
     )
       .then((response) => response.json())
@@ -217,7 +217,7 @@ export default function ViewGroup() {
     };
 
     fetch(
-      `http://192.168.1.130:8080/api/group/tasks/${params.groupId}`,
+      `http://192.168.208.1:8080/api/group/tasks/${params.groupId}`,
       requestOptions
     )
       .then((response) => response.json())
@@ -244,7 +244,7 @@ export default function ViewGroup() {
     };
 
     fetch(
-      `http://192.168.1.130:8080/api/group/forum/${params.groupId}`,
+      `http://192.168.208.1:8080/api/group/forum/${params.groupId}`,
       requestOptions
     )
       .then((response) => response.json())
@@ -271,7 +271,7 @@ export default function ViewGroup() {
       headers: myHeaders,
     };
 
-    fetch(`http://192.168.1.130:8080/api/task/${taskId}`, requestOptions)
+    fetch(`http://192.168.208.1:8080/api/task/${taskId}`, requestOptions)
       .then((response) => response.json())
       .then((result) => {
         console.log("task success result", result);
