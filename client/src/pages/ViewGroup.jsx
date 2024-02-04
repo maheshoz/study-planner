@@ -1,30 +1,25 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { Swiper, SwiperSlide } from "swiper/react";
 import SwiperCore from "swiper";
 import { Navigation } from "swiper/modules";
 import "swiper/css/bundle";
 import {
-  FaBath,
-  FaBed,
-  FaChair,
+
+  FaCheckCircle,
+  FaCheckSquare,
   FaExternalLinkAlt,
-  FaInfo,
-  FaInfoCircle,
-  FaMapMarkedAlt,
-  FaParking,
-  FaPeopleArrows,
   FaRocket,
   FaShare,
   FaTasks,
   FaUser,
   FaUsers,
 } from "react-icons/fa";
-import Contact from "../components/Contact";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Link } from "react-router-dom";
+import ProgressBar from "@ramonak/react-progress-bar";
+import Loading from "../components/Loading";
 
 export default function ViewGroup() {
   SwiperCore.use([Navigation]);
@@ -198,24 +193,57 @@ export default function ViewGroup() {
       } );
   };
 
+  function updateTaskDone(taskId) {
+    console.log('update task id', taskId);
+    let myHeaders = new Headers();
+    myHeaders.append("Authorization", `Bearer ${currentUser.data.accessToken}`);
+    
+    let requestOptions = {
+      method: 'GET',
+      headers: myHeaders,
+  
+    };
+    
+    fetch(`http://192.168.1.130:8080/api/task/${taskId}`, requestOptions)
+      .then(response => response.json())
+      .then(result => {
+        console.log('task success result', result);
+        toast(result.message);
+        getAllTasks();
+      } )
+      .catch(error => {
+        console.log('error', error);
+        toast(error.message);
+      });
+  }
+
   const TaskItem = (props) => {
-    const {name, description, deadline, taskId} = props.task;
+    const {name, description, deadline, taskId, status, progress} = props.task;
     return (
-      <div className="flex flex-col gap-2 justify-center m-2 bg-slate-100 p-3">
+      <div className="flex sm:mt-6 flex-col gap-4 justify-center m-2 bg-slate-100 p-3">
         <div className="flex justify-between items-center">
         <p className="capitalize text-xl">{name}</p>
         <p >{deadline} {deadline > 1 ? 'days' : 'day'}</p>
 
         </div>
-        <p className="text-lg text-slate-500">{description}</p>
-        <p>{taskId}</p>
+
+        <div className="flex justify-between items-center">
+        <p className="text-lg text-slate-500 flex-1">{description}</p>
+
+        { status && status !== 'COMPLETED' ? (
+          <button onClick={()=>{updateTaskDone(taskId)}} className="px-3 py-2 bg-green-400 border-2 rounded-xl text-white font-bold"> Sync </button>
+        ) : <button>Done</button>}
+        </div>
+        <ProgressBar  className="mt-6" completed= {progress} height="15px"/>
+
+        
       </div>
     )
   }
 
   return (
-    <main className=' mx-6 px-4 sm:px-12 max-w-6xl mx-auto bg-white mt-8 mb-32'>
-      {loading && <p className='text-center my-7 text-2xl'>Loading...</p>}
+    <main className='px-4 sm:px-12 max-w-6xl flex items-center bg-white mt-8 mb-32'>
+      {loading && <Loading />}
       {error && (
         <p className='text-center my-7 text-2xl'>Something went wrong</p>
       )}

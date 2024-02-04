@@ -13,6 +13,7 @@ import Search from "./pages/Search"
 import Dashboard from "./pages/Dashboard"
 import CreateGroup from "./pages/CreateGroup"
 import ViewGroup from "./pages/ViewGroup"
+import NoMatch from "./components/NoMatch"
 
 export default function App() {
   return <BrowserRouter>
@@ -32,6 +33,9 @@ export default function App() {
         <Route path="/view-group/:groupId" element={<ViewGroup />}/>
         <Route path="/update-listing/:listingId" element={<UpdateListing />}/>
       </Route>
+      <Route path="*" element={<NoMatch/>}>
+            
+          </Route>
 
     </Routes>
   </BrowserRouter>

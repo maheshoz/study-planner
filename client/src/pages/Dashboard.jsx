@@ -16,6 +16,8 @@ import {
 import { useDispatch } from "react-redux";
 import { useState } from "react";
 
+import Loading from "../components/Loading";
+
 export default function Dashboard() {
   const [userData, setUserData] = useState(null);
   const [userGroupsData, setUserGroupsData] = useState(null);
@@ -86,8 +88,10 @@ export default function Dashboard() {
       <div className='w-full'>
         <h2 className="text-3xl font-semibold text-slate-600 mt-6">Your Groups: </h2>
 
+      
+
         {userGroupsData && userGroupsData.length === 0 && (
-          <p>No groups found, create new one</p>
+          <p>No groups found, create new one <Loading /></p>
         )}
 
         <div className='max-w-6xl mx-auto p-3 flex flex-row flex-wrap gap-4 my-4'>
