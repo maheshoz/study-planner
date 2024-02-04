@@ -42,6 +42,7 @@ export default function ViewGroup() {
   // console.log('currentUser', currentUser);
   console.log("params ", params);
 
+
   useEffect(() => {
     const fetchGroupListing = async () => {
       try {
@@ -97,6 +98,7 @@ export default function ViewGroup() {
   console.log("email invite", emailInvite);
 
   const sendEmailInvite = () => {
+    setLoading(true);
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("Authorization", `Bearer ${currentUser.data.accessToken}`);
@@ -115,7 +117,7 @@ export default function ViewGroup() {
     };
 
     fetch(
-      "http://192.168.1.130:8080/api/invitation/754effd9-b350-416b-9d49-9cabf8c3d78b",
+      `http://192.168.1.130:8080/api/invitation/${params.groupId}`,
       requestOptions
     )
       .then((response) => response.json())
@@ -126,7 +128,7 @@ export default function ViewGroup() {
       .catch((error) => {
         console.log("error", error);
         toast(error.message);
-      });
+      }).finally(()=>{setLoading(false)});
   };
 
   const handleTaskBtnClick = async () => {
