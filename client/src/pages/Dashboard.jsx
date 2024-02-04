@@ -91,7 +91,7 @@ export default function Dashboard() {
       
 
         {userGroupsData && userGroupsData.length === 0 && (
-          <p>No groups found, create new one <Loading /></p>
+          <p>No groups found, create new one </p>
         )}
 
         <div className='max-w-6xl mx-auto p-3 flex flex-row flex-wrap gap-4 my-4'>
