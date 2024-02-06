@@ -9,20 +9,16 @@ export default function CreateGroup() {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    
     name: "",
     description: "",
-
   });
- 
+
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
   const [groupCreated, setGroupCreated] = useState(false);
   console.log(formData);
 
   const handleChange = (e) => {
-
-
     if (
       e.target.type === "number" ||
       e.target.type === "text" ||
@@ -36,19 +32,20 @@ export default function CreateGroup() {
     console.log(formData);
   };
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-
       let myHeaders = new Headers();
       myHeaders.append("Content-Type", "application/json");
-      myHeaders.append("Authorization", `Bearer ${currentUser.data.accessToken}`);
+      myHeaders.append(
+        "Authorization",
+        `Bearer ${currentUser.data.accessToken}`
+      );
 
-      console.log('form josn data', JSON.stringify(formData));
+      console.log("form josn data", JSON.stringify(formData));
       setLoading(true);
       setError(false);
-      const res = await fetch("http://192.168.208.1:8080/api/group", {
+      const res = await fetch("http://localhost:8080/api/group", {
         method: "POST",
         headers: myHeaders,
         body: JSON.stringify({
@@ -63,17 +60,16 @@ export default function CreateGroup() {
         setGroupCreated(false);
       }
 
-      if (data.status === 'CREATED') {
+      if (data.status === "CREATED") {
         setGroupCreated(true);
-        console.log('data message', data.message);
-        setTimeout(()=> {
-          navigate('/dashboard');
-        },2000);
+        console.log("data message", data.message);
+        setTimeout(() => {
+          navigate("/dashboard");
+        }, 2000);
         toast(data.message);
-        
       }
-      console.log('created group data', data);
-      
+      console.log("created group data", data);
+
       // navigate(`/view_group/${data.groudId}`);
     } catch (error) {
       setError(error.message);
@@ -81,28 +77,30 @@ export default function CreateGroup() {
     }
   };
   return (
-    <main className='p-3 max-w-4xl mx-auto'>
-      <h1 className='text-3xl font-semibold text-center my-7'>
+    <main className="p-3 max-w-4xl mx-auto">
+      <h1 className="text-3xl font-semibold text-center my-7">
         Create a Group
       </h1>
-      <form onSubmit={handleSubmit} className='flex flex-col sm:flex-row max-w-2xl gap-4 mx-auto'>
-        <div className='flex flex-col gap-4 flex-1'>
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col sm:flex-row max-w-2xl gap-4 mx-auto">
+        <div className="flex flex-col gap-4 flex-1">
           <input
-            type='text'
-            placeholder='Name'
-            className='border p-3 rounded-lg'
-            id='name'
-            maxLength='62'
-            minLength='10'
+            type="text"
+            placeholder="Name"
+            className="border p-3 rounded-lg"
+            id="name"
+            maxLength="62"
+            minLength="10"
             required
             onChange={handleChange}
             value={formData.name}
           />
           <textarea
-            type='text'
-            placeholder='Description'
-            className='border p-3 rounded-lg'
-            id='description'
+            type="text"
+            placeholder="Description"
+            className="border p-3 rounded-lg"
+            id="description"
             required
             onChange={handleChange}
             value={formData.description}
@@ -110,16 +108,15 @@ export default function CreateGroup() {
 
           <button
             disabled={loading}
-            className='p-3 bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 disabled:opacity-80'
-          >
+            className="p-3 bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 disabled:opacity-80">
             {loading ? "Creating..." : "Create a group"}
           </button>
-          {error && <p className='text-red-700 text-sm'>{error}</p>}
-          {groupCreated && <p className='text-green-700 text-sm'>Group created successfully</p>}
+          {error && <p className="text-red-700 text-sm">{error}</p>}
+          {groupCreated && (
+            <p className="text-green-700 text-sm">Group created successfully</p>
+          )}
           <ToastContainer />
         </div>
-
-      
       </form>
     </main>
   );

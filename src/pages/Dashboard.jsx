@@ -42,7 +42,7 @@ export default function Dashboard() {
     //   .catch((error) => console.log("error", error));
 
     const fetchUser = async () => {
-      const res = await fetch("http://192.168.208.1:8080/api/user", {
+      const res = await fetch("http://localhost:8080/api/user", {
         method: "GET",
         headers: myHeaders,
         // body: JSON.stringify(formData),
@@ -56,7 +56,7 @@ export default function Dashboard() {
     fetchUser();
 
     const fetchUserGroups = async () => {
-      const res = await fetch("http://192.168.208.1:8080/api/user/groups", {
+      const res = await fetch("http://localhost:8080/api/user/groups", {
         method: "GET",
         headers: myHeaders,
         // body: JSON.stringify(formData),
@@ -72,29 +72,37 @@ export default function Dashboard() {
 
   function GroupItem({ name, description, id }) {
     return (
-      <Link to={`/view-group/${id}`} className='p-6 inline-block m-2 bg-white shadow-md hover:shadow-lg rounded-lg w-64'>
-        <p className='text-2xl font-semibold text-slate-600 capitalize'> {name}</p>
-        <p className='text-l mt-2 text-slate-500 line-clamp-3'> <span className="font-semibold">Description : </span> {description}</p>
+      <Link
+        to={`/view-group/${id}`}
+        className="p-6 inline-block m-2 bg-white shadow-md hover:shadow-lg rounded-lg w-64">
+        <p className="text-2xl font-semibold text-slate-600 capitalize">
+          {" "}
+          {name}
+        </p>
+        <p className="text-l mt-2 text-slate-500 line-clamp-3">
+          {" "}
+          <span className="font-semibold">Description : </span> {description}
+        </p>
       </Link>
     );
   }
 
   return (
-    <div className=' px-3 max-w-6xl mx-auto'>
+    <div className=" px-3 max-w-6xl mx-auto">
       {/* <h1 className='text-center text-slate-700 text-2xl pt-6'>
         Welcome to Dashboard page
       </h1> */}
 
-      <div className='w-full'>
-        <h2 className="text-3xl font-semibold text-slate-600 mt-6">Your Groups: </h2>
-
-      
+      <div className="w-full">
+        <h2 className="text-3xl font-semibold text-slate-600 mt-6">
+          Your Groups:{" "}
+        </h2>
 
         {userGroupsData && userGroupsData.length === 0 && (
           <p>No groups found, create new one </p>
         )}
 
-        <div className='max-w-6xl mx-auto p-3 flex flex-row flex-wrap gap-4 my-4'>
+        <div className="max-w-6xl mx-auto p-3 flex flex-row flex-wrap gap-4 my-4">
           {userGroupsData &&
             userGroupsData.length > 0 &&
             userGroupsData.map((group) => (
@@ -109,14 +117,13 @@ export default function Dashboard() {
 
         <Link
           to={"/create-group"}
-          className='bg-green-700 text-white p-3 inline-block rounded-lg uppercase text-center hover:opacity-90'
-        >
+          className="bg-green-700 text-white p-3 inline-block rounded-lg uppercase text-center hover:opacity-90">
           Create Group{" "}
         </Link>
       </div>
 
-      <div className=''>
-        <h3 className=' text-slate-700 text-2xl pt-6'>Pending group tasks:</h3>
+      <div className="">
+        <h3 className=" text-slate-700 text-2xl pt-6">Pending group tasks:</h3>
       </div>
     </div>
   );

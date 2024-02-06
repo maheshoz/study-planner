@@ -29,7 +29,9 @@ export default function Profile() {
   const [filePerc, setFilePerc] = useState(0);
   const [fileUploadError, setFileUploadError] = useState(false);
   const [formData, setFormData] = useState({
-    emailId: '', name: '', profilePic: '',
+    emailId: "",
+    name: "",
+    profilePic: "",
   });
   const [updateSuccess, setUpdateSuccess] = useState(false);
   const [showListingsError, setShowListingsError] = useState(false);
@@ -37,7 +39,7 @@ export default function Profile() {
   const [userData, setUserData] = useState(null);
   const dispatch = useDispatch();
 
-  console.log('formdata ', formData);
+  console.log("formdata ", formData);
 
   // firebase storage
   // allow read;
@@ -51,7 +53,7 @@ export default function Profile() {
     myHeaders.append("Authorization", `Bearer ${currentUser.data.accessToken}`);
 
     const fetchUser = async () => {
-      const res = await fetch("http://192.168.208.1:8080/api/user", {
+      const res = await fetch("http://localhost:8080/api/user", {
         method: "GET",
         headers: myHeaders,
         // body: JSON.stringify(formData),
@@ -101,7 +103,6 @@ export default function Profile() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
- 
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("Authorization", `Bearer ${currentUser.data.accessToken}`);
@@ -109,7 +110,7 @@ export default function Profile() {
     try {
       dispatch(updateUserStart());
       console.log("formData user updata", JSON.stringify(formData));
-      const res = await fetch(`http://192.168.208.1:8080/api/user`, {
+      const res = await fetch(`http://localhost:8080/api/user`, {
         method: "PUT",
         headers: myHeaders,
         body: JSON.stringify(formData),
@@ -121,7 +122,7 @@ export default function Profile() {
       }
 
       // dispatch(updateUserSuccess({...data}));
-      console.log('loading in submit', loading);
+      console.log("loading in submit", loading);
       setUpdateSuccess(true);
     } catch (error) {
       dispatch(updateUserFailure(error.message));
@@ -149,97 +150,102 @@ export default function Profile() {
   const handleSignOut = async () => {
     try {
       dispatch(signOutUserStart());
-  
+
       dispatch(signOutUserSuccess(null));
     } catch (error) {
       dispatch(signOutUserFailure(error.message));
     }
   };
 
-console.log('user data', userData);
+  console.log("user data", userData);
   return (
-    <div className='p-3 max-w-lg mx-auto'>
-      <h1 className='text-3xl font-semibold text-center my-7'>Profile</h1>
-      <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
+    <div className="p-3 max-w-lg mx-auto">
+      <h1 className="text-3xl font-semibold text-center my-7">Profile</h1>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <input
           onChange={(e) => setFile(e.target.files[0])}
-          type='file'
+          type="file"
           ref={fileRef}
           hidden
-          accept='image/*'
+          accept="image/*"
         />
         <img
           onClick={() => fileRef.current.click()}
-          src={userData && userData.hasOwnProperty("data") && userData.data.profilePic}
-          alt='profile'
-          className='rounded-full h-24 w-24 object-cover cursor-pointer self-center mt-2'
+          src={
+            userData &&
+            userData.hasOwnProperty("data") &&
+            userData.data.profilePic
+          }
+          alt="profile"
+          className="rounded-full h-24 w-24 object-cover cursor-pointer self-center mt-2"
         />
-        <p className='text-sm self-center'>
+        <p className="text-sm self-center">
           {fileUploadError ? (
-            <span className='text-red-700'>
+            <span className="text-red-700">
               Error Image upload (image must be less than 2 mb)
             </span>
           ) : filePerc > 0 && filePerc < 100 ? (
-            <span className='text-slate-700'>{`Uploading ${filePerc}%`}</span>
+            <span className="text-slate-700">{`Uploading ${filePerc}%`}</span>
           ) : filePerc === 100 ? (
-            <span className='text-green-700'>Image successfully uploaded!</span>
+            <span className="text-green-700">Image successfully uploaded!</span>
           ) : (
             ""
           )}
         </p>
         <input
-          type='text'
-          placeholder='username'
-          defaultValue={userData && userData.hasOwnProperty("data") && userData.data.name}
-          id='name'
-          className='border p-3 rounded-lg'
+          type="text"
+          placeholder="username"
+          defaultValue={
+            userData && userData.hasOwnProperty("data") && userData.data.name
+          }
+          id="name"
+          className="border p-3 rounded-lg"
           onChange={handleChange}
         />
         <input
-          type='email'
-          placeholder='email'
-          id='emailId'
-          defaultValue={userData && userData.hasOwnProperty("data") && userData.data.emailId}
-          className='border p-3 rounded-lg'
+          type="email"
+          placeholder="email"
+          id="emailId"
+          defaultValue={
+            userData && userData.hasOwnProperty("data") && userData.data.emailId
+          }
+          className="border p-3 rounded-lg"
           onChange={handleChange}
         />
         <input
-          type='password'
-          placeholder='password'
+          type="password"
+          placeholder="password"
           onChange={handleChange}
-          id='password'
-          className='border p-3 rounded-lg'
+          id="password"
+          className="border p-3 rounded-lg"
         />
         <button
           disabled={loading}
-          className='bg-slate-700 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-80'
-        >
+          className="bg-slate-700 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-80">
           {loading ? "Loading..." : "Update"}
         </button>
         <Link
           to={"/create-group"}
-          className='bg-green-700 text-white p-3 rounded-lg uppercase text-center hover:opacity-90'
-        >
+          className="bg-green-700 text-white p-3 rounded-lg uppercase text-center hover:opacity-90">
           create group
         </Link>
       </form>
-      <div className='flex justify-end mt-5'>
+      <div className="flex justify-end mt-5">
         {/* <span
           onClick={handleDeleteUser}
           className='text-red-700 cursor-pointer'
         >
           Delete account
         </span> */}
-        <span onClick={handleSignOut} className='text-red-700 cursor-pointer'>
+        <span onClick={handleSignOut} className="text-red-700 cursor-pointer">
           Sign out
         </span>
       </div>
 
-      <p className='text-red-700 mt-5'>{error ? error : ""}</p>
-      <p className='text-green-700 mt-5'>
+      <p className="text-red-700 mt-5">{error ? error : ""}</p>
+      <p className="text-green-700 mt-5">
         {updateSuccess ? "User is updated successfully!" : ""}
       </p>
-     
     </div>
   );
 }

@@ -37,11 +37,11 @@ export default function ViewGroup() {
   const [tasks, setTasks] = useState(null);
   const [tasksFlag, setTasksFlag] = useState(false);
   const [chatDiscussions, setChatDiscussions] = useState("");
-  const [tempChat, setTempChat] = useState('');
+  const [groupMembersData, setGroupMembersData] = useState(null);
+  const [tempChat, setTempChat] = useState("");
   const [chatDiscussionFlag, setChatDiscussionFlag] = useState(false);
   // console.log('currentUser', currentUser);
   console.log("params ", params);
-
 
   useEffect(() => {
     const fetchGroupListing = async () => {
@@ -60,7 +60,7 @@ export default function ViewGroup() {
 
         setLoading(true);
         const res = await fetch(
-          `http://192.168.208.1:8080/api/group/${params.groupId}`,
+          `http://localhost:8080/api/group/${params.groupId}`,
           {
             method: "GET",
             headers: myHeaders,
@@ -88,6 +88,7 @@ export default function ViewGroup() {
 
     fetchGroupListing();
     getAllTasks();
+    getGroupMembers();
     getAllChatDiscussions();
   }, [params.groupId]);
 
@@ -117,7 +118,7 @@ export default function ViewGroup() {
     };
 
     fetch(
-      `http://192.168.208.1:8080/api/invitation/${params.groupId}`,
+      `http://localhost:8080/api/invitation/${params.groupId}`,
       requestOptions
     )
       .then((response) => response.json())
@@ -128,7 +129,10 @@ export default function ViewGroup() {
       .catch((error) => {
         console.log("error", error);
         toast(error.message);
-      }).finally(()=>{setLoading(false)});
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   const handleTaskBtnClick = async () => {
@@ -151,10 +155,7 @@ export default function ViewGroup() {
       redirect: "follow",
     };
 
-    fetch(
-      `http://192.168.208.1:8080/api/task/${params.groupId}`,
-      requestOptions
-    )
+    fetch(`http://localhost:8080/api/task/${params.groupId}`, requestOptions)
       .then((response) => response.json())
       .then((result) => {
         console.log(result);
@@ -189,7 +190,7 @@ export default function ViewGroup() {
     };
 
     fetch(
-      `http://192.168.208.1:8080/api/group/forum/${params.groupId}`,
+      `http://localhost:8080/api/group/forum/${params.groupId}`,
       requestOptions
     )
       .then((response) => response.json())
@@ -217,7 +218,7 @@ export default function ViewGroup() {
     };
 
     fetch(
-      `http://192.168.208.1:8080/api/group/tasks/${params.groupId}`,
+      `http://localhost:8080/api/group/tasks/${params.groupId}`,
       requestOptions
     )
       .then((response) => response.json())
@@ -244,7 +245,7 @@ export default function ViewGroup() {
     };
 
     fetch(
-      `http://192.168.208.1:8080/api/group/forum/${params.groupId}`,
+      `http://localhost:8080/api/group/forum/${params.groupId}`,
       requestOptions
     )
       .then((response) => response.json())
@@ -252,12 +253,37 @@ export default function ViewGroup() {
         console.log("all tasks", result);
         setChatDiscussions(result["data"]);
         console.log("chat discussions ", chatDiscussions);
-        setTempChat('');
+        setTempChat("");
         setChatDiscussionFlag(true);
       })
       .catch((error) => {
         console.log("error", error);
         setChatDiscussionFlag(false);
+      });
+  };
+  const getGroupMembers = () => {
+    let myHeaders = new Headers();
+    myHeaders.append("Authorization", `Bearer ${currentUser.data.accessToken}`);
+
+    let requestOptions = {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+
+    fetch(
+      `http://localhost:8080/api/group/members/${params.groupId}`,
+      requestOptions
+    )
+      .then((response) => response.json())
+      .then((result) => {
+        console.log("Group Members result: ", result);
+        setGroupMembersData(result["data"]);
+        console.log("group members data ", groupMembersData);
+        console.log("group members ", groupMembers);
+      })
+      .catch((error) => {
+        console.log("error", error);
       });
   };
 
@@ -271,7 +297,7 @@ export default function ViewGroup() {
       headers: myHeaders,
     };
 
-    fetch(`http://192.168.208.1:8080/api/task/${taskId}`, requestOptions)
+    fetch(`http://localhost:8080/api/task/${taskId}`, requestOptions)
       .then((response) => response.json())
       .then((result) => {
         console.log("task success result", result);
@@ -288,24 +314,23 @@ export default function ViewGroup() {
     const { name, description, deadline, taskId, status, progress } =
       props.task;
     return (
-      <div className='flex sm:mt-6 flex-col gap-4 justify-center m-2 bg-slate-100 p-3'>
-        <div className='flex justify-between items-center'>
-          <p className='capitalize text-xl'>{name}</p>
+      <div className="flex sm:mt-6 flex-col gap-4 justify-center m-2 bg-slate-100 p-3">
+        <div className="flex justify-between items-center">
+          <p className="capitalize text-xl">{name}</p>
           <p>
             {deadline} {deadline > 1 ? "days" : "day"}
           </p>
         </div>
 
-        <div className='flex justify-between items-center'>
-          <p className='text-lg text-slate-500 flex-1'>{description}</p>
+        <div className="flex justify-between items-center">
+          <p className="text-lg text-slate-500 flex-1">{description}</p>
 
           {status && status !== "COMPLETED" ? (
             <button
               onClick={() => {
                 updateTaskDone(taskId);
               }}
-              className='px-3 py-2 bg-green-400 border-2 rounded-xl text-white font-bold'
-            >
+              className="px-3 py-2 bg-green-400 border-2 rounded-xl text-white font-bold">
               {" "}
               Sync{" "}
             </button>
@@ -313,123 +338,145 @@ export default function ViewGroup() {
             <button>Done</button>
           )}
         </div>
-        <ProgressBar className='mt-6' completed={progress} height='15px' />
+        <ProgressBar className="mt-6" completed={progress} height="15px" />
       </div>
+    );
+  };
+  const GroupMembersItem = (props) => {
+    const { name, emailId, profilePic } = props.info;
+    return (
+      <li className="flex items-center gap-2 p-2">
+        <p className="text-slate-700">
+          {name + " "}
+          {emailId}
+        </p>
+      </li>
     );
   };
 
   const ChatDiscuss = (props) => {
-    console.log('data props', props);
+    console.log("data props", props);
     const { text, userId } = props.info;
 
     return (
-      <div className='flex justify-between p-3 border-b-gray-800'>
-        <p className='text-l text-slate-500 capitalize'>
-          {text}
-        </p>
+      <div className="flex justify-between p-3 border-b-gray-800">
+        <p className="text-l text-slate-500 capitalize">{text}</p>
 
-        <p className='text-slate-500'>
+        <p className="text-slate-500">
           {userId.name}{" "}
-          <img className='w-8 h-8 bg-slate-500 rounded-full' src={userId.profilePic} alt='profile pic' />
+          <img
+            className="w-8 h-8 bg-slate-500 rounded-full"
+            src={userId.profilePic}
+            alt="profile pic"
+          />
         </p>
       </div>
     );
   };
-
+  console.log("group dataMembersData After Return:  ", groupMembersData);
   return (
-    <main className='  w-full  flex justify-center items-center bg-slate-100 justify-center'>
-      <div className=' bg-white  p-16 mt-8 mb-16'>
+    <main className="  w-full  flex  items-center bg-slate-100 justify-center">
+      <div className=" bg-white  p-16 mt-8 mb-16">
         {loading && <Loading />}
         {error && (
-          <p className='text-center my-7 text-2xl'>Something went wrong</p>
+          <p className="text-center my-7 text-2xl">Something went wrong</p>
         )}
 
         {groupData && !loading && !error && (
-          <div className=''>
-            <h1 className='text-3xl pt-6 font-semibold text-slate-600'>
-              <FaUsers className='inline  w-10 h-10 mx-4' />
+          <div className="">
+            <h1 className="text-3xl pt-6 font-semibold text-slate-600">
+              <FaUsers className="inline  w-10 h-10 mx-4" />
               {groupData.name}
             </h1>
-            <p className='text-base sm:text-lg mt-3 text-slate-700'>
-              <span className='text-semibold text-slate-800'> </span>{" "}
+            <p className="text-base sm:text-lg mt-3 text-slate-700">
+              <span className="text-semibold text-slate-800"> </span>{" "}
               {groupData.description}
             </p>
-            <p className='text-sm text-slate-500 mt-2'>
+            <p className="text-sm text-slate-500 mt-2">
               created by: {groupData.owner.name} / {groupData.owner.emailId}
             </p>
+            <div className="w-[300px] flex flex-col bg-[#E2E8F0] min-h-[100px]">
+              <span className="px-2 py-1 bg-white w-max mx-auto m-2 rounded-sm ">
+                Members
+              </span>
+              <ul>
+                {groupMembersData.length > 0 &&
+                  groupMembersData.map((member) => (
+                    <GroupMembersItem info={member} />
+                  ))}
+              </ul>
+            </div>
 
-            <section className='flex flex-wrap gap-4 items-start'>
-              <div className='sm:mt-4'>
-                <div className='mt-2 w-80 p-6 mt-8 flex flex-col gap-2 bg-slate-200 rounded-lg'>
-                  <p className='text-lg'>
-                    Send group invite <FaRocket className='inline' />
+            <section className="flex flex-wrap gap-4 items-start">
+              <div className="sm:mt-4">
+                <div className=" w-80 p-6 mt-8 flex flex-col gap-2 bg-slate-200 rounded-lg">
+                  <p className="text-lg">
+                    Send group invite <FaRocket className="inline" />
                   </p>
                   <input
-                    type='email'
-                    placeholder='email'
-                    id='emailId'
+                    type="email"
+                    placeholder="email"
+                    id="emailId"
                     defaultValue={emailInvite}
-                    className='border-slate-700 border p-3 rounded-lg'
+                    className="border-slate-700 border p-3 rounded-lg"
                     onChange={(e) => {
                       setEmailInvite(e.target.value);
                     }}
                   />
                   <button
                     onClick={sendEmailInvite}
-                    className='bg-green-700 text-white p-3 rounded-lg uppercase text-center hover:opacity-90 mt-3'
-                  >
+                    className="bg-green-700 text-white p-3 rounded-lg uppercase text-center hover:opacity-90 mt-3">
                     {" "}
                     Send
                   </button>
                   <ToastContainer autoClose={2000} />
                 </div>
 
-                <div className='create-tasks mt-2 w-80 p-6 mt-8 flex flex-col gap-2 bg-slate-200 rounded-lg'>
-                  <p className='text-lg'>Create Task</p>
+                <div className="create-tasks  w-80 p-6 mt-8 flex flex-col gap-2 bg-slate-200 rounded-lg">
+                  <p className="text-lg">Create Task</p>
                   <input
-                    type='text'
-                    placeholder='enter task name'
-                    id='taskName'
+                    type="text"
+                    placeholder="enter task name"
+                    id="taskName"
                     defaultValue={taskName}
-                    className='border-slate-700 border p-3 rounded-lg'
+                    className="border-slate-700 border p-3 rounded-lg"
                     onChange={(e) => {
                       setTaskName(e.target.value);
                     }}
                   />
                   <input
-                    type='text'
-                    placeholder='enter task description'
-                    id='taskDescription'
+                    type="text"
+                    placeholder="enter task description"
+                    id="taskDescription"
                     defaultValue={taskDescription}
-                    className='border-slate-700 border p-3 rounded-lg'
+                    className="border-slate-700 border p-3 rounded-lg"
                     onChange={(e) => {
                       setTaskDescription(e.target.value);
                     }}
                   />
                   <input
-                    type='number'
-                    placeholder=' no.of days'
-                    id='taskDeadline'
+                    type="number"
+                    placeholder=" no.of days"
+                    id="taskDeadline"
                     defaultValue={taskDeadline}
-                    className='border-slate-700 border p-3 rounded-lg'
+                    className="border-slate-700 border p-3 rounded-lg"
                     onChange={(e) => {
                       setTaskDeadline(e.target.value);
                     }}
                   />
                   <button
                     onClick={handleTaskBtnClick}
-                    className='bg-green-700 text-white p-3 rounded-lg uppercase text-center hover:opacity-90 mt-3'
-                  >
+                    className="bg-green-700 text-white p-3 rounded-lg uppercase text-center hover:opacity-90 mt-3">
                     {" "}
                     Create Task
                   </button>
                 </div>
               </div>
 
-              <div className='flex-1'>
-                <div className='tasks  mt-5'>
-                  <h2 className='text-2xl text-slate-700 font-semibold mb-4 mt-8'>
-                    <FaTasks className='inline' /> Tasks
+              <div className="flex-1">
+                <div className="tasks  mt-5">
+                  <h2 className="text-2xl text-slate-700 font-semibold mb-4 mt-8">
+                    <FaTasks className="inline" /> Tasks
                   </h2>
                   {tasksFlag &&
                     tasks &&
@@ -438,29 +485,27 @@ export default function ViewGroup() {
                       <TaskItem key={task.taskId} task={task} />
                     ))}
 
-                  <div className='bg-slate-100'>
-                    <h3 className='text-xl p-4 rouned-lg'>Discussion/Chat</h3>
-                      { console.log(chatDiscussions)}
-                    <div className='room p-4'>
+                  <div className="bg-slate-100">
+                    <h3 className="text-xl p-4 rouned-lg">Discussion/Chat</h3>
+                    {console.log(chatDiscussions)}
+                    <div className="room p-4">
                       {chatDiscussionFlag &&
                         chatDiscussions &&
                         chatDiscussions.length > 0 &&
-                        chatDiscussions.map((cd) => <ChatDiscuss  info={cd} />)}
-                    
+                        chatDiscussions.map((cd) => <ChatDiscuss info={cd} />)}
 
                       <input
-                        type='text'
-                        className='m-4 border-gray-500 border p-2 rounded-lg w-full'
+                        type="text"
+                        className="m-4 border-gray-500 border p-2 rounded-lg w-full"
                         value={tempChat}
                         onChange={(e) => {
                           setTempChat(e.target.value);
                         }}
                       />
-                      <div className='flex justify-end'>
+                      <div className="flex justify-end">
                         <button
                           onClick={handleDiscussionClick}
-                          className=' bg-green-700 text-white p-1 px-16 rounded'
-                        >
+                          className=" bg-green-700 text-white p-1 px-16 rounded">
                           Send
                         </button>
                       </div>
@@ -470,30 +515,30 @@ export default function ViewGroup() {
               </div>
             </section>
 
-            <div className='tasks w-full mt-5'>
-              <h2 className='text-2xl text-slate-700 font-semibold'>
+            <div className="tasks w-full mt-5">
+              <h2 className="text-2xl text-slate-700 font-semibold">
                 {" "}
-                Resources <FaExternalLinkAlt className='inline' />
+                Resources <FaExternalLinkAlt className="inline" />
               </h2>
-              <div className='flex flex-wrap'>
-                <Link className='text-green-400  p-4 '>
+              <div className="flex flex-wrap">
+                <Link className="text-green-400  p-4 ">
                   PDF on javascript arrays
                 </Link>
-                <Link className='text-green-400 p-4 '>DBMS Notes</Link>
-                <Link className='text-green-400 p-4 '>
+                <Link className="text-green-400 p-4 ">DBMS Notes</Link>
+                <Link className="text-green-400 p-4 ">
                   Data structures and Algorithms book
                 </Link>
-                <Link className='text-green-400 p-4 '>
+                <Link className="text-green-400 p-4 ">
                   Data Mining class notes
                 </Link>
               </div>
             </div>
 
-            <div className='p-4'></div>
+            <div className="p-4"></div>
           </div>
         )}
 
-        <div className='mt-32'></div>
+        <div className="mt-32"></div>
       </div>
     </main>
   );
