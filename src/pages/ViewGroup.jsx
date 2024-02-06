@@ -37,7 +37,7 @@ export default function ViewGroup() {
   const [tasks, setTasks] = useState(null);
   const [tasksFlag, setTasksFlag] = useState(false);
   const [chatDiscussions, setChatDiscussions] = useState("");
-  const [groupMembersData, setGroupMembersData] = useState(null);
+  const [groupMembersData, setGroupMembersData] = useState("");
   const [tempChat, setTempChat] = useState("");
   const [chatDiscussionFlag, setChatDiscussionFlag] = useState(false);
   // console.log('currentUser', currentUser);
@@ -280,7 +280,6 @@ export default function ViewGroup() {
         console.log("Group Members result: ", result);
         setGroupMembersData(result["data"]);
         console.log("group members data ", groupMembersData);
-        console.log("group members ", groupMembers);
       })
       .catch((error) => {
         console.log("error", error);
